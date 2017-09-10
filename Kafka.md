@@ -6,6 +6,9 @@ Here we are going to use it to process cryptocurrency trading events using the P
 but it can be adapted for use with any exchange.
 
 Kafka uses Zookeeper for coordinated message stores.
+We'll first cover how to install the Kafka server backend.
+
+# Kafka Server
 
 ## Kafka Source Distribution
 
@@ -40,43 +43,69 @@ gradle jar
 ```
 to the jar files packaged up for running, as expected by `./kafka-topics`.
 
-## Kafka and Zookeeper in Docker
+## Schemas
 
-We use the single-container image for running Kafka and Zookeeper from Spotify
+While it is sometimes great to live in a fairyland of dynamic types and schemaless operations,
+having a schema has many benefits in a streaming system:
+
+* Enforce forward and backward compatibility and a migration path. Ignore unsupported message types that your code doesn't know how to handle. No more crashing on
+serialization or deserialization errors.
+* Built-in serialization and deserialization. You don't have to write custom converters, which can be error-prone.
+* You can handle different message types / schema versions
+easily, allowing you to mix different message types in a single topic.
+
+This comes at the cost of
+* Setting up a separate schema registry service.
+* Using a schema wrapper library, like Avro.
+
+In this section, we'll see how hard these are.
+
+First, we'll compile things from source like the hardcore hackers we are.
+Plus, I hate giving my email address to Confluent just to download their tarballs.
+
+### `common` and `rest-utils`
+
+You'll need to clone the `common` and `rest-utils` dependencies, fetch and checkout the `v3.3.0` release tag (the latest at the time of this writing),
+and build them with Maven into your local cache.
+You'll need to do these in order, since `rest-utils` depends on `common`.
 
 ```
-git clone https://github.com/spotify/docker-kafka
+> cd ~/src/kafka.dir
+> git clone https://github.com/confluentinc/common.git
+> cd common
+> git fetch v3.3.0
+> git checkout v3.3.0
+> mvn compile
+> mvn install
 ```
 
-Edit the file `kafka/Dockerfile` with version numbers updated to the latest versions of Kafka and Scala at the time of this writing.
-
 ```
-ENV SCALA_VERSION 2.12
-ENV KAFKA_VERSION 0.11.0.0
-```
-
-Then build the image:
-
-```
-docker build . -t kafka/spotify:latest
+> cd ~/src/kafka.dir/
+> git clone https://github.com/confluentinc/rest-utils.git
+> cd rest-utils
+> git fetch v3.3.0
+> git checkout v3.3.0
+> mvn compile
+> mvn install
 ```
 
-When it's done, start up the image in a `tmux` pane and voila:
+### `Schema Registry`
+
+Now you have what you need to build Confluent's Schema Registry from source, which provides a nice
+REST interface to query and create schemas that are used / usable by your streaming app.
+
 ```
-⇒  docker run -p 2181:2181 -p 9092:9092 spotify/kafka
-/usr/lib/python2.7/dist-packages/supervisor/options.py:296: UserWarning: Supervisord is running as root and it is searching for its configuration file in default locations (including its current working directory); you probably want to specify a "-c" argument specifying an absolute path to a configuration file for improved security.
-  'Supervisord is running as root and it is searching '
-2017-09-09 04:04:19,077 CRIT Supervisor running as root (no user in config file)
-2017-09-09 04:04:19,078 WARN Included extra file "/etc/supervisor/conf.d/kafka.conf" during parsing
-2017-09-09 04:04:19,078 WARN Included extra file "/etc/supervisor/conf.d/zookeeper.conf" during parsing
-2017-09-09 04:04:19,087 INFO RPC interface 'supervisor' initialized
-2017-09-09 04:04:19,087 CRIT Server 'unix_http_server' running without any HTTP authentication checking
-2017-09-09 04:04:19,088 INFO supervisord started with pid 1
-2017-09-09 04:04:20,095 INFO spawned: 'zookeeper' with pid 7
-2017-09-09 04:04:20,102 INFO spawned: 'kafka' with pid 8
-2017-09-09 04:04:21,112 INFO success: zookeeper entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
-2017-09-09 04:04:21,112 INFO success: kafka entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+> cd ~/src/kafka.dir
+> git clone https://github.com/confluentinc/schema-registry.git
+> cd schema-registry
+> git fetch v3.3.0
+> git checkout v3.3.0
+> mvn compile
+> mvn install 
 ```
+When installing Schema Registry, you'll need to have your
+
+
 
 Now try getting a list of topics, back in your Kafka source distribution
 ```
@@ -90,6 +119,8 @@ No topics yet. Let's create one.
 ```
 
 That takes care of the server, but now we'd like to connect to our simple little server with various clients.
+
+# Clients
 
 ## `node-rdkafka`
 
