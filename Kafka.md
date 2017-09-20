@@ -73,7 +73,7 @@ You'll need to do these in order, since `rest-utils` depends on `common`.
 > cd ~/src/kafka.dir
 > git clone https://github.com/confluentinc/common.git
 > cd common
-> git fetch v3.3.0
+> git fetch origin v3.3.0
 > git checkout v3.3.0
 > mvn compile
 > mvn install
@@ -83,11 +83,20 @@ You'll need to do these in order, since `rest-utils` depends on `common`.
 > cd ~/src/kafka.dir/
 > git clone https://github.com/confluentinc/rest-utils.git
 > cd rest-utils
-> git fetch v3.3.0
+> git fetch origin v3.3.0
 > git checkout v3.3.0
 > mvn compile
 > mvn install
 ```
+
+If you're interested in what other tags are available, and if a newer tag / release is available
+for upgrading, just run
+
+```
+git tag
+```
+
+in each repo.
 
 ### `Schema Registry`
 
