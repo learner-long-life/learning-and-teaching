@@ -19,5 +19,59 @@ such as store the results of private computation or keep secret balances like Mo
 Like blockchains, it is often useful to run testnets (called altnets in SSB parlance) while debugging your applications
 to avoid polluting the mainnets, filling your friend's hard drives, and also maintain the privacy of your data.
 
-Here's a good tutorial on altnets with Scuttlebot
+Here's a good tutorial on altnets with Scuttlebot by Josiah Witt.
 https://josiahwitt.com/2018/07/08/scuttlebutt-intro-test-playground.html
+In particular, it will show you how to create a random new shared secret (`shs`) and signing key (`sign`) in base64
+that you can substitute in your altnet `config`.
+
+# Discoverability
+
+In order to tell other pubs about your pub, you need to follow some steps based on the [official setup a pub tutorial](https://ssbc.github.io/docs/scuttlebot/howto-setup-a-pub.html).
+
+By default, ssb nodes, including pubs, only discover each other on the same local network.
+To connect across the internet, you can either run a pub (a known publicly accessible node that is invited to follow normal nodes)
+or to statically add node IP addresses with the `ssb-gossip` plugin.
+
+## Running a Pub
+
+In the first method, you'll need to advertise your hostname (not IP address, possibly for reasons of NAT)
+
+### Start up Server
+
+  First, start up your node's server to create a `manifest.json` file.
+  ```
+  scuttlebot server --host {hostname}
+  ```
+  in our example, it would look like 
+
+### Get ID
+
+Then in other terminal get its id
+  ```
+  scuttlebot whoami
+  ```
+
+### Publish an About Message
+
+Next, publish a message about your pub, something like this
+  ``` 
+  sbot publish --type about --about {pub-id} --name {hostname}
+  ```
+  in our example it would look like
+
+### Request an Invite Code
+
+On your pub node
+ ```
+ > sbot invite.create 1
+ "arcology.nyc:8007:@yy7jfy6kZgIowz7LWVKYlmaysCL8V/7373pmQdjZj3I=.ed25519~hLzZooEY/c+nw+3vL3fVEIS+TxG7N3IVJHW6+UptUSo="
+ ```
+Or on someone else's pub node, request an invite.
+
+### Get Followed By An Existing Pub
+
+1. Then request an invite from an existing pub and accept it here by pasting its code
+  ```
+  ```
+
+## Adding a Peer
