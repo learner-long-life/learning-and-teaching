@@ -31,3 +31,18 @@ into the current namespace by this call
 (use `overtone.live)
 ```
 
+# Namespaces
+
+Clojure namespaces are bindings between symbols and variables.
+They are first-class objects and can be enumerated.
+They are usually, but don't have to be, associated with files,
+and one usually declares a new namespace at the top of a
+file with any automatic imports such as
+
+```
+(ns intr
+    "Working through intro video example"
+    (:use [overtone.live]
+          [overtone.inst.sampled-piano])
+    )
+```
