@@ -44,3 +44,52 @@ Sum: 2, Val: 3, Key: 1, Iter: Seq [ 2, 3, 4, 5 ]
 Sum: 5, Val: 4, Key: 2, Iter: Seq [ 2, 3, 4, 5 ]
 Sum: 9, Val: 5, Key: 3, Iter: Seq [ 2, 3, 4, 5 ]
 ```
+
+You can use `reduce` to keep a running updated `Map` summing up currency values, for example.
+
+Assume you create a list of records (themselves `Map`s)
+```
+> a = Map({amountCurrency: 'USD', amountNumber: 123.45})
+Map {
+  size: 2,
+  _root:                                                                                            ArrayMapNode { ownerID: OwnerID {}, entries: [ [Array], [Array] ] },                            __ownerID: undefined,
+  __hash: undefined,
+  __altered: false }
+> b = Map({amountCurrency: 'USD', amountNumber: 77.43})
+Map {
+  size: 2,
+  _root:
+   ArrayMapNode { ownerID: OwnerID {}, entries: [ [Array], [Array] ] },
+  __ownerID: undefined,
+  __hash: undefined,
+  __altered: false }
+> c = Map({amountCurrency: "ETH", amountNumber: 111.23})
+Map {
+  size: 2,
+  _root:
+   ArrayMapNode { ownerID: OwnerID {}, entries: [ [Array], [Array] ] },
+  __ownerID: undefined,
+  __hash: undefined,
+  __altered: false }
+> list = Seq([a,b,c])
+```
+
+Then you can sum up by currency using `reduce` and a running `Map` as follows:
+```
+y = list.reduce((sum, val, key) => {
+  let txCurrency = val.get('amountCurrency'), txAmount = val.get('amountNumber');
+  console.log(txCurrency + " " + txAmount);
+  return sum.set(txCurrency, txAmo$nt+(sum.get(txCurrency) ? sum.get(txCurrency) : 0)); }, new Map())
+USD 123.45
+USD 77.43
+ETH 111.23
+Map {
+  size: 2,
+  _root:
+   ArrayMapNode { ownerID: undefined, entries: [ [Array], [Array] ] },
+  __ownerID: undefined,
+  __hash: undefined,
+  __altered: false }
+> JSON.stringify(y)
+'{"USD":200.88,"ETH":111.23}'
+```
