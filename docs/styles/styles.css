@@ -1,0 +1,28 @@
+main {
+    height: 1024px;
+    background-image: url(../images/plastic-trash.jpg);
+}
+
+h1 {
+    font-size: 120px;
+    font-family: Bangers;
+    color: antiquewhite;
+}
+
+h2 {
+    font-size: 48px;
+    font-family: Merriweather;
+    color: black;
+    background-color: darkgray;
+}
+
+a {
+    color: antiquewhite;
+    text-decoration: underline;
+}
+
+.caption {
+    font-size: 12px;
+    background-color: black;
+    color: white;
+}
