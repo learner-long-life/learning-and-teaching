@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<style>
+
+body {
+  margin: 0px;
+  padding: 0px;
+}
+
+.colorSquare {
+  width: 100px;
+  height: 100px;
+}
+
+main {
+  margin: 0px;
+  padding: 0px;
+  font-family: 'Noto Sans Cypro Minoan', sans-serif;
+}
+
+#sidebar {
+  position: fixed;
+  width: 10rem;
+  height: 100%;
+  background-color: purple;
+  font-size: 5rem;
+  color: white;
+  padding: 10px;
+  overflow: hidden;
+}
+
+#middle {
+  background-color: lightgray;
+  width: 75%;
+  height: 100%;
+  left: 10rem;
+  position: relative;
+}
+
+</style>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Cypro+Minoan&display=swap" rel="stylesheet">
+
+</head>
+<body>
+ 
+  <main>
+
+    <div id="sidebar">
+      𒾙𒾚𒾛𒾜𒾝𒾞𒾟𒾠𒾡𒾢𒾣𒾤𒾥𒾦𒾧𒾨𒾩𒾪𒾫𒾬
+    </div>
+
+    <div id="middle">
+      Viewport
+    </div>
+
+    <div id="toolbar">
+    </div>
+
+  </main>
+  <script id="colorsJSON" type="text/javascript" src="colors.js">
+  </script>
+  <script type="text/javascript" language="javascript">
+    const middleTag = document.getElementById("middle");
+    colorsJSON.forEach((colorObj) => {
+       const newColor = document.createElement("div");
+       newColor.setAttribute("class", "colorSquare");
+       newColor.style["background-color"] = colorObj.hex;
+       middleTag.appendChild(newColor);
+    })
+  </script>
+  </script>
+</body>
+</html>
