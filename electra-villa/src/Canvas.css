@@ -1,0 +1,7 @@
+.Canvas {
+  width: 90%;
+  border: 1px solid green;
+  background-image: url("/grid2.svg");
+  background-repeat: repeat;
+  height: 100vh;
+}
