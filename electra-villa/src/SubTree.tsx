@@ -2,6 +2,7 @@ import React, { RefObject, Component, useState, useEffect, useRef } from 'react'
 import './SubTree.css';
 import { TbCircuitGround } from 'react-icons/tb';
 import Tree from '../lib/Tree';
+import { LeaderLine } from 'leader-line';
 
 interface SubTreeProps<T> {
   data: Tree<T>;
