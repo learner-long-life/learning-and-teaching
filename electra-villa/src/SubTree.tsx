@@ -50,6 +50,7 @@ class SubTree extends React.Component<SubTreeProps<T>> {
     this.id=props.data ? props.data.value : 'noValue';
     this.leftRef = React.createRef(); //useRef(null);
     this.rightRef = React.createRef(); //useRef(null);
+    new LeaderLine(this.leftRef, this.rightRef);
   }
 
   render() {
