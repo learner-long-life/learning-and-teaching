@@ -2,6 +2,7 @@ import React, { RefObject, Component, useState, useEffect, useRef } from 'react'
 import './SubTree.css';
 import { TbCircuitGround } from 'react-icons/tb';
 import Tree from '../lib/Tree';
+import { LeaderLine } from 'leader-line';
 
 interface SubTreeProps<T> {
   data: Tree<T>;
@@ -49,6 +50,7 @@ class SubTree extends React.Component<SubTreeProps<T>> {
     this.id=props.data ? props.data.value : 'noValue';
     this.leftRef = React.createRef(); //useRef(null);
     this.rightRef = React.createRef(); //useRef(null);
+    new LeaderLine(this.leftRef, this.rightRef);
   }
 
   render() {

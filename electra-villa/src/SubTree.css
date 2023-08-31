@@ -12,7 +12,10 @@
    align-items: center;
    justify-content: center;
    */
-  margin: 5rem;
+   margin-top: 2rem;
+   margin-bottom: 1rem;
+  margin-left: auto;
+  margin-right: auto;
   padding: 0.5rem;
   font-size: 1.6rem;
   font-weight: bold;
@@ -20,8 +23,6 @@
 
 .SubTree {
   border: 1px solid blue;
-  margin-left: auto;
-  margin-right: auto;
 }
 
 .NodeChildren {
