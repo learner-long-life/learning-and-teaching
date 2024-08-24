@@ -1,0 +1,180 @@
+$ ./create_lambda.sh                                                                                                                                in bash at 16:11:14
+{
+    "FunctionName": "LambdaFunctionOverHttps",
+    "FunctionArn": "arn:aws:lambda:us-east-1:029061586525:function:LambdaFunctionOverHttps",
+    "Runtime": "python3.12",
+    "Role": "arn:aws:iam::029061586525:role/lambda-apigateway-role",
+    "Handler": "LambdaFunctionOverHttps.lambda_handler",
+    "CodeSize": 765,
+    "Description": "",
+    "Timeout": 3,
+    "MemorySize": 128,
+    "LastModified": "2024-08-20T20:11:16.910+0000",
+    "CodeSha256": "lv5F6MPMEMYG/kbqgpVCn5u7ajxfBeo4UUq5bh5C8XM=",
+    "Version": "$LATEST",
+    "TracingConfig": {
+        "Mode": "PassThrough"
+    },
+    "RevisionId": "4e26a18b-6285-4d88-b0f0-7303ffa2b1f3",
+    "State": "Pending",
+    "StateReason": "The function is being created.",
+    "StateReasonCode": "Creating",
+    "PackageType": "Zip",
+    "Architectures": [
+        "x86_64"
+    ],
+    "EphemeralStorage": {
+        "Size": 512
+    },
+    "SnapStart": {
+        "ApplyOn": "None",
+        "OptimizationStatus": "Off"
+    },
+    "RuntimeVersionConfig": {
+        "RuntimeVersionArn": "arn:aws:lambda:us-east-1::runtime:acd6500d0e3f6a085fb07933e3472ed6e58360d19ec5dd91bc7c7e8ad119de42"
+    }
+}
+
+aws --profile arco-ppham apigatewayv2 create-api --name DynamoDBOperations --protocol-type HTTP
+{
+    "ApiEndpoint": "https://hgp95xcrf9.execute-api.us-east-1.amazonaws.com",
+    "ApiId": "hgp95xcrf9",
+    "ApiKeySelectionExpression": "$request.header.x-api-key",
+    "CreatedDate": "2024-08-20T20:22:09+00:00",
+    "DisableExecuteApiEndpoint": false,
+    "Name": "DynamoDBOperations",
+    "ProtocolType": "HTTP",
+    "RouteSelectionExpression": "$request.method $request.path"
+}
+
+aws dynamodb create-table --profile arco-ppham --table-name Music --attribute-definitions AttributeName=Artist,AttributeType=S AttributeName=SongTitle,AttributeType=S --key-schema AttributeName=Artist,KeyType=HASH AttributeName=SongTitle,KeyType=RANGE --provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5 --table-class STANDARD
+{
+    "TableDescription": {
+        "AttributeDefinitions": [
+            {
+                "AttributeName": "Artist",
+                "AttributeType": "S"
+            },
+            {
+                "AttributeName": "SongTitle",
+                "AttributeType": "S"
+            }
+        ],
+        "TableName": "Music",
+        "KeySchema": [
+            {
+                "AttributeName": "Artist",
+                "KeyType": "HASH"
+            },
+            {
+                "AttributeName": "SongTitle",
+                "KeyType": "RANGE"
+            }
+        ],
+        "TableStatus": "CREATING",
+        "CreationDateTime": "2024-08-23T16:27:25.297000-04:00",
+        "ProvisionedThroughput": {
+            "NumberOfDecreasesToday": 0,
+            "ReadCapacityUnits": 5,
+            "WriteCapacityUnits": 5
+        },
+        "TableSizeBytes": 0,
+        "ItemCount": 0,
+        "TableArn": "arn:aws:dynamodb:us-east-1:029061586525:table/Music",
+        "TableId": "0cf3bf7b-961d-4d76-af82-5812ce031a69",
+        "TableClassSummary": {
+            "TableClass": "STANDARD"
+        },
+        "DeletionProtectionEnabled": false
+    }
+}
+
+{
+    "TableDescription": {
+        "AttributeDefinitions": [
+            {
+                "AttributeName": "Artist",
+                "AttributeType": "S"
+            },
+            {
+                "AttributeName": "SongTitle",
+                "AttributeType": "S"
+            }
+        ],
+        "TableName": "Music",
+        "KeySchema": [
+            {
+                "AttributeName": "Artist",
+                "KeyType": "HASH"
+            },
+            {
+                "AttributeName": "SongTitle",
+                "KeyType": "RANGE"
+            }
+        ],
+        "TableStatus": "CREATING",
+        "CreationDateTime": "2024-08-23T17:49:03.373000-04:00",
+        "ProvisionedThroughput": {
+            "NumberOfDecreasesToday": 0,
+            "ReadCapacityUnits": 5,
+            "WriteCapacityUnits": 5
+        },
+        "TableSizeBytes": 0,
+        "ItemCount": 0,
+        "TableArn": "arn:aws:dynamodb:us-west-2:029061586525:table/Music",
+        "TableId": "b47f89c0-53a2-4be9-97b4-5efcb3da5091",
+        "TableClassSummary": {
+            "TableClass": "STANDARD"
+        },
+        "DeletionProtectionEnabled": false
+    }
+}
+
+{
+    "ApiEndpoint": "https://yu5ta9sb36.execute-api.us-west-2.amazonaws.com",
+    "ApiId": "yu5ta9sb36",
+    "ApiKeySelectionExpression": "$request.header.x-api-key",
+    "CreatedDate": "2024-08-23T21:52:20+00:00",
+    "DisableExecuteApiEndpoint": false,
+    "Name": "DynamoDBOperations",
+    "ProtocolType": "HTTP",
+    "RouteSelectionExpression": "$request.method $request.path"
+}
+
+./create_route.sh                                                                           in bash at 17:53:31
+{
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "RouteId": "wrx36ve",
+    "RouteKey": "GET /"
+}
+
+./create_integration.sh
+{
+    "ConnectionType": "INTERNET",
+    "IntegrationId": "29up8uk",
+    "IntegrationMethod": "POST",
+    "IntegrationType": "AWS_PROXY",
+    "IntegrationUri": "arn:aws:lambda:us-east-1:029061586525:function:LambdaFunctionOverHttps",
+    "PayloadFormatVersion": "2.0",
+    "TimeoutInMillis": 30000
+}
+
+./create_deployment.sh
+{
+    "CreatedDate": "2024-08-23T23:18:52+00:00",
+    "DefaultRouteSettings": {
+        "DetailedMetricsEnabled": false
+    },
+    "LastUpdatedDate": "2024-08-23T23:18:52+00:00",
+    "RouteSettings": {},
+    "StageName": "stage",
+    "StageVariables": {},
+    "Tags": {}
+}
+{
+    "AutoDeployed": false,
+    "CreatedDate": "2024-08-23T23:18:53+00:00",
+    "DeploymentId": "5dg7iz",
+    "DeploymentStatus": "DEPLOYED"
+}

@@ -1,0 +1,9 @@
+{
+  "operation": "create",
+  "payload": {
+    "Item": {
+      "id": "1234ABCD",
+      "number": 5
+    }
+  }
+}
