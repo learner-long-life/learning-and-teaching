@@ -1,0 +1,177 @@
+<html>
+<body>
+    <div id="music-container">
+      <div></div>
+      <div></div>
+    </div>
+    <svg viewBox="0 0 450 450" width="450" height="450" id="theSVG">
+        <defs>
+          <style>
+            path {
+              stroke-width: 20;
+              dys-topian-attribute: false;
+              stroke: #741f3e;
+            }
+
+            path.current {
+              stroke: #bb7700;
+            }
+
+            path.selected {
+              stroke: cornflowerblue;
+            }
+
+            circle {
+              fill: none;
+              stroke: seagreen;
+              stroke-width: 10px;
+            }
+          </style>
+        </defs>
+        <path id="arc" 
+          d="M 10 10 A 150 150 135 1 1 20 20" 
+          fill="none"
+        />
+        <circle cx="300" cy="300" r="100" pathLength="12" stroke-dasharray="1 11" rotate="90"></circle>
+      </svg>
+    <script src="http://unpkg.com/tone"></script>
+    <script type="text/javascript">
+      // From https://stackoverflow.com/a/18473154
+    
+      function polarToCartesian(centerX, centerY, radius, angleInDegrees) {
+        // Apparently 0 degrees is north
+        const angleInRadians = (angleInDegrees - 90) * Math.PI / 180.0;
+
+        return {
+          x: centerX + radius * Math.cos(angleInRadians),
+          y: centerY + radius * Math.sin(angleInRadians),
+        };
+      }
+
+      function describeArc(x, y, radius, startAngle, endAngle) {
+
+        const start = polarToCartesian(x, y, radius, startAngle);
+        const end = polarToCartesian(x, y, radius, endAngle);
+
+        const largeArcFlag = endAngle - startAngle > 180 ? "1" : "0";
+
+        return [
+          "M", start.x, start.y,
+          "A", radius, radius, 0, largeArcFlag, 1, end.x, end.y,
+        ].join(" ");
+      }
+
+      const theSVG = document.getElementById("theSVG");
+      const theArc = document.getElementById("arc");
+
+      const GAP = 10;
+      const SEGS_COUNT = 12;
+      const delta = 360.0 / SEGS_COUNT;
+
+      theArc.setAttribute("d", describeArc(150, 150, 100, GAP, delta));
+
+      const synth = new Tone.Synth().toDestination();
+
+      // Start with the first arc 
+
+      class ArcsSegment {
+
+        static LENGTH = 3; // number of concentric arcs in a segment 
+        static NOTES = ["C4", "A4", "D4"];
+
+        constructor() {
+          // which of LENGTH concentric arcs is selected
+          this.selectedArc = null; 
+          // a list of SVG args for this segment 
+          this.arcs = [];
+        }
+
+        addArcSegment(newArc) {
+          this.arcs.push(newArc);
+          newArc.note = ArcsSegment.NOTES[this.arcs.length % ArcsSegment.NOTES.length];
+          newArc.addEventListener("click", (evt) => {
+            // Clear the selected color class from previous note, if any 
+            this.selectedArc?.classList.remove("selected");
+            // Set the new selected note
+            this.selectedArc = evt.target;
+            if (evt.target != newArc) {
+              throw new Error("Click handler target is not the attached DOM elt!!!!!!!!");
+            }
+            // Add new colored class to new selected note
+            newArc.classList.add("selected");
+          });
+        }
+
+        unbeat() {
+          this.selectedArc?.classList.remove("current");
+        }
+
+        beat() {
+          this.selectedArc?.classList.add("current");
+          synth.triggerAttackRelease(this.selectedArc?.note, "8n");
+        }
+
+      }
+     
+      scaleArcs = [new ArcsSegment()];
+      for (let i = 0; i < SEGS_COUNT; i += 1) {
+        scaleArcs.push(new ArcsSegment());
+      }
+
+      const drawConcentric = (radius) => {
+        let arcs = [theArc];
+
+        for (let i = 1; i < SEGS_COUNT; i += 1) {
+          const newArc = theArc.cloneNode();
+         // document.createElement("path");
+          newArc.setAttribute("id", `arc-${radius}-${String(i).padStart(2, 0)}`);
+          newArc.setAttribute("d", describeArc(150, 150, radius, i*delta + GAP, (i+1)*delta ));
+          theSVG.appendChild(newArc);
+          scaleArcs[i].addArcSegment(newArc);
+        }
+
+        const BEAT_STROKE="#741f3e";
+        const CLEAR_STROKE="#bb7700";
+
+        //create a synth and connect it to the main output (your speakers)
+
+        const fmOsc = new Tone.FMOscillator({
+          frequency: 80,
+          type: "square",
+          modulationType: "triangle",
+          harmonicity: 0.2,
+          modulationIndex: 3
+        }).toDestination();
+
+      }
+
+      drawConcentric(100);
+      drawConcentric(110);
+      drawConcentric(120);
+
+      let current = 0;
+      setInterval(() => {
+        let new_current = (current + 1) % SEGS_COUNT;
+        //arcs[current].setAttribute("stroke", CLEAR_STROKE);
+        //arcs[new_current].setAttribute("stroke", BEAT_STROKE);
+        console.log(current, scaleArcs[current] instanceof ArcsSegment);
+        scaleArcs[current].unbeat();
+        //arcs[current].classList.remove("current");
+        scaleArcs[new_current].beat();
+        // arcs[new_current].classList.add("current");
+        current = new_current;
+        //play a middle 'C' for the duration of an 8th note
+        if (current == 0) {
+          //fmOsc.start();
+        } else {
+          //fmOsc.stop();
+        }
+        //synth.triggerAttackRelease("C4", "8n");
+        console.log(current);
+      }, 1000);
+
+    </script>
+
+</body>
+
+</html>

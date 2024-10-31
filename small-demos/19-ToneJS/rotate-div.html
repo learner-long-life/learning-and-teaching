@@ -1,0 +1,60 @@
+<head>
+  <style>
+    .pad {
+      transform: rotate(0.01turn);
+    }
+    .inner-pad {
+      width: 10rem;
+      height: 1rem;
+      transform: translate(10px,0);
+    }
+    .sea-green {
+      background-color: seagreen;
+    }
+    .goldenrod {
+      background-color: #FF5733;
+    }
+  </style>
+</head>
+<body>
+  <script src="http://unpkg.com/tone"></script>
+
+  <button id="play">
+    play
+  </button>
+
+  <div class="pad" id="parent">
+
+  </div>
+
+  <script defer type="text/javascript">
+  //create a synth and connect it to the main output (your speakers)
+  const synth = new Tone.Synth().toDestination();
+
+  const btn = document.getElementById("play");
+  btn.addEventListener("click", () => {
+    //play a middle 'C' for the duration of an 8th note
+    synth.triggerAttackRelease("C4", "8n");
+  });
+
+  // make a circle
+  const SEGS=10;
+  const delta = 1.0 / SEGS;
+  console.log(`rotate(${delta}turns)`);
+  const parent = document.getElementById("parent");
+  for (let i=0; i < SEGS; i += 1) {
+    const padRotate = document.createElement("div");
+    padRotate.style.setProperty("transform", `rotate(${i*delta}turn)`);
+    padRotate.className="rotate-pad";
+    const pad = document.createElement("div");
+    pad.className = "inner-pad sea-green";
+    pad.addEventListener("mouseover", (event) => {
+      event.target.className = "inner-pad goldrenrod";
+    });
+    pad.style.setProperty("transform", "translate(100px,10px)");
+    // pad.setAttribute("transform", `rotate(${1/SEGS}turn) translate(100px,0)`);
+    padRotate.appendChild(pad);
+    parent.appendChild(padRotate);
+  } 
+  </script>
+</body>
